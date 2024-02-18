@@ -27,7 +27,7 @@ provider "azurerm" {
 }
 
 module "rg" {
-  source= "../module/resource-group"
+  source= "./module/resource-group"
   rg_name = "et-dev-sandbox"
   rg_location = "East US 2"
   rg_tags = {
@@ -37,7 +37,7 @@ module "rg" {
 }
 
 module "acr" {
-  source = "../module/acr"
+  source = "./module/acr"
   rg_resource = module.rg.rg_name
   location_resource = module.rg.rg_location
   acr_name = "sxregistrytfdev"
@@ -50,7 +50,7 @@ module "acr" {
 
 module "sqlserver" {
 
-  source = "../module/sql-server"
+  source = "./module/sql-server"
   sqlserver_name = "sxsqlstfdev"
   rg_resource = module.rg.rg_name
   location_resource = module.rg.rg_location
@@ -62,7 +62,7 @@ module "sqlserver" {
 }
 
 module "sqlpool" {
-  source = "../module/sql-pool"
+  source = "./module/sql-pool"
   sqlpool_name = "sxpooldbtfdev"
   rg_resource = module.rg.rg_name
   location_resource = module.rg.rg_location
