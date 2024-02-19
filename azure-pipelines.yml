@@ -40,9 +40,49 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'validate'
-  - stage: 
-    condition: succeeded('tfvalidate')
-    dependsOn: tfvalidate
+
+  - stage: plan
+    displayName: plan
+    jobs:
+    - job: plan
+      steps:
+      - task: TerraformInstaller@0
+        displayName: tfinstall
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformTaskV4@4
+        displayName: init
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'Friday'
+          backendAzureRmResourceGroupName: '$(bergname)'
+          backendAzureRmStorageAccountName: '$(besaname)'
+          backendAzureRmContainerName: '$(becontainer)'
+          backendAzureRmKey: '$(bekey)'
+      - task: TerraformTaskV4@4
+        displayName: plan
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          environmentServiceNameAzureRM: 'Friday'
+
+  - stage: approve
+    displayName: approve
+    jobs:
+    - job: approve
+      displayName: wait for approval
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        timeoutInMinutes: 60
+        inputs:
+          notifyUsers: thomas.lantigua@solvex.com.do
+          instructions: 'Approve plan for continue'
+
+  - stage:
+    displayName: apply
     jobs:
       - job: apply
         steps:
@@ -50,6 +90,7 @@ stages:
             displayName: tfinstall
             inputs:
               terraformVersion: 'latest'
+
           - task: TerraformTaskV4@4
             displayName: init
             inputs:
@@ -60,12 +101,7 @@ stages:
               backendAzureRmStorageAccountName: '$(besaname)'
               backendAzureRmContainerName: '$(becontainer)'
               backendAzureRmKey: '$(bekey)'
-          - task: TerraformTaskV4@4
-            displayName: plan
-            inputs:
-              provider: 'azurerm'
-              command: 'plan'
-              environmentServiceNameAzureRM: 'Friday'
+
           - task: TerraformTaskV4@4
             displayName: apply
             inputs:
