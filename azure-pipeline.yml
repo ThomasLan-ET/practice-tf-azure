@@ -69,7 +69,7 @@ stages:
       displayName: wait for approval
       steps:
       - task: ManualValidation@0
-        timeoutInMinute: 60
+        timeoutInMinutes: 60
         inputs:
           notifyUsers: thomas.lantigua@solvex.com.do
           instructions: 'Approve plan for continue'
