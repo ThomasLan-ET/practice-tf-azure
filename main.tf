@@ -73,3 +73,16 @@ module "sqlpool" {
     Env = "SandBox"
   }
 }
+
+module "asp" {
+  source = "./module/app-service-plan"
+  asp_name = "sxasptfdev"
+  rg_resource = module.rg.rg_name
+  location_resource = module.rg.rg_location
+  depends_on = [ module.rg ]
+
+  tags_resource = {
+    Owner = "Thomas"
+    Env = "SandBox"
+  }
+}
