@@ -40,6 +40,42 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'validate'
+
+  - stage: plan
+    displayName: plan
+    jobs:
+    - job: plan
+      pool:
+      vmImage: ubuntu-latest
+      steps:
+      - task: TerraformInstaller@0
+        displayName: tfinstall
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformTaskV4@4
+        displayName: init
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'Friday'
+          backendAzureRmResourceGroupName: '$(bergname)'
+          backendAzureRmStorageAccountName: '$(besaname)'
+          backendAzureRmContainerName: '$(becontainer)'
+          backendAzureRmKey: '$(bekey)'
+
+  - stage: approve
+    displayName: approve
+    jobs:
+    - job: approve
+      displayName: wait for approval
+      steps:
+      - task: ManualValidation@0
+        timeoutInMinute: 60
+        inputs:
+          notifyUsers: thomas.lantigua@solvex.com.do
+          instructions: 'Approve plan for continue'
+
   - stage: 
     condition: succeeded('tfvalidate')
     dependsOn: tfvalidate
@@ -50,6 +86,7 @@ stages:
             displayName: tfinstall
             inputs:
               terraformVersion: 'latest'
+
           - task: TerraformTaskV4@4
             displayName: init
             inputs:
@@ -60,12 +97,14 @@ stages:
               backendAzureRmStorageAccountName: '$(besaname)'
               backendAzureRmContainerName: '$(becontainer)'
               backendAzureRmKey: '$(bekey)'
+
           - task: TerraformTaskV4@4
             displayName: plan
             inputs:
               provider: 'azurerm'
               command: 'plan'
               environmentServiceNameAzureRM: 'Friday'
+
           - task: TerraformTaskV4@4
             displayName: apply
             inputs:
