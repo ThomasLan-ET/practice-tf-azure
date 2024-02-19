@@ -61,6 +61,12 @@ stages:
           backendAzureRmStorageAccountName: '$(besaname)'
           backendAzureRmContainerName: '$(becontainer)'
           backendAzureRmKey: '$(bekey)'
+      - task: TerraformTaskV4@4
+        displayName: plan
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          environmentServiceNameAzureRM: 'Friday'
 
   - stage: approve
     displayName: approve
