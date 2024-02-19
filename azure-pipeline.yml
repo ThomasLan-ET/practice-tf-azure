@@ -40,7 +40,8 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'validate'
-  - stage: 
+
+  - stage: apply
     jobs:
       - job: apply
         steps:
@@ -58,12 +59,6 @@ stages:
               backendAzureRmStorageAccountName: '$(besaname)'
               backendAzureRmContainerName: '$(becontainer)'
               backendAzureRmKey: '$(bekey)'
-          - task: TerraformTaskV4@4
-            displayName: plan
-            inputs:
-              provider: 'azurerm'
-              command: 'plan'
-              environmentServiceNameAzureRM: 'Friday'
           - task: TerraformTaskV4@4
             displayName: apply
             inputs:
