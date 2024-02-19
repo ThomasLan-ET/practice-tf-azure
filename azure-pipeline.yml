@@ -75,9 +75,8 @@ stages:
           notifyUsers: thomas.lantigua@solvex.com.do
           instructions: 'Approve plan for continue'
 
-  - stage: 
-    condition: succeeded('tfvalidate')
-    dependsOn: tfvalidate
+  - stage:
+    displayName: apply
     jobs:
       - job: apply
         steps:
@@ -96,13 +95,6 @@ stages:
               backendAzureRmStorageAccountName: '$(besaname)'
               backendAzureRmContainerName: '$(becontainer)'
               backendAzureRmKey: '$(bekey)'
-
-          - task: TerraformTaskV4@4
-            displayName: plan
-            inputs:
-              provider: 'azurerm'
-              command: 'plan'
-              environmentServiceNameAzureRM: 'Friday'
 
           - task: TerraformTaskV4@4
             displayName: apply
