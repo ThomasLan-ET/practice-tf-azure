@@ -10,10 +10,8 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  bergname: 'et-practice-rbe'
-  besaname: 'etrbetf'
-  becontainer: 'rbe-terraform'
-  bekey: 'dev.terraform.tfstate'
+  - group: Infraestructure
+  - group: Comman variables for TF
 
 stages:
   - stage: tfvalidate
